@@ -40,10 +40,9 @@ namespace xml {
   };
 
   export auto parse(const std::string code) -> DOM {
+
     auto tokens = lex(code);
-
     DOM d;
-
     std::string cur{};
     u16 depth = 0;
     for(auto &t: tokens) {
@@ -81,19 +80,24 @@ namespace xml {
           {
             d[cur].attrs.push_back({t.attribute, t.value});
           }
-        case TokenType::NAMESPACE:
-          {
-            break;
-          }
-
         default:
           break;
       }
     }
-    auto t = d["/COLLADA/asset/contributor/author"];
-    std::println("{} ", t.text);
     return d;
+  }
 
+  export void print_dom(DOM& d) {
+    for(auto node : d.lookup) {
+      std::println("{}: ", node.first);
+      for(auto i : d[node.first].attrs) {
+        std::print("    ");
+        std::println("{}: {} ", i.first, i.second);
+      }
+      std::print("    ");
+      std::println("TEXT: {}", d[node.first].text);
+      std::println("");
+    }
   }
 
 }

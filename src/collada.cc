@@ -27,6 +27,7 @@ namespace jcast {
       std::string data((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
       auto dom = xml::parse(data);
+      xml::print_dom(dom);
 
     }
 
