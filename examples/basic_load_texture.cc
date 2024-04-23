@@ -8,10 +8,11 @@ import util;
 
 auto main() -> i32 {
   jcast::Mesh m1 = jcast::load_mesh("../examples/cube.dae");
+  jcast::Mesh m2 = jcast::load_mesh("../examples/cube_weird.dae");
 
   std::vector<f32> verts;
   std::vector<f32> coords;
-  for(auto i: m1.vertices) {
+  for(auto i: m2.vertices) {
     verts.push_back(i.position.x);
     verts.push_back(i.position.y);
     verts.push_back(i.position.z);
@@ -25,8 +26,8 @@ auto main() -> i32 {
   Model work = LoadModel("../examples/cube.glb");
 
   Mesh real;
-  real.vertexCount = m1.vertices.size() * 3;
-  real.triangleCount = m1.vertices.size();
+  real.vertexCount = m2.vertices.size() * 3;
+  real.triangleCount = m2.vertices.size();
 
   std::println("size : {}", m1.vertices.size());
 
@@ -37,7 +38,7 @@ auto main() -> i32 {
   int i = 0;
   int j = 0;
   int k = 0;
-  for(auto v: m1.vertices) {
+  for(auto v: m2.vertices) {
     real.vertices[i++] = v.position.x;
     real.vertices[i++] = v.position.y;
     real.vertices[i++] = v.position.z;
