@@ -43,7 +43,7 @@ namespace xml {
     const std::string value;
   };
 
-  export auto lex(const std::string code) -> std::vector<Token>{
+  export auto lex(const std::string_view code) -> std::vector<Token>{
 
     std::vector<Token> tokens;
     std::string buffer;
@@ -95,6 +95,8 @@ namespace xml {
           while(code[ptr] != ' ' && code[ptr] != '>') {
             elem += code[ptr++];
           }
+
+          if(code[ptr-1] == '/') elem.pop_back();
           tokens.push_back(Token {
               .type = TokenType::START,
               .value = elem
@@ -102,20 +104,27 @@ namespace xml {
           buffer.clear();
 
           if(code[ptr] == '>') {
-            std::string text;
-            ptr++;
-            while(code[ptr] != '<') {
-              if(!std::iswspace(code[ptr]) && code[ptr] != '<') {
-                text += code[ptr];
-              }
+            if(code[ptr-1] == '/') {
+              tokens.push_back( Token {
+                  .type = TokenType::END,
+                  .value = elem
+                  });
+            } else {
+              std::string text;
               ptr++;
-            }
+              while(code[ptr] != '<') {
+                if(code[ptr] != '<') {
+                  text += code[ptr];
+                }
+                ptr++;
+              }
 
-            if(text.size()) {
-              tokens.push_back(Token {
-                  .type = TokenType::TEXT,
-                  .value = text
-                });
+              if(text.size()) {
+                tokens.push_back(Token {
+                    .type = TokenType::TEXT,
+                    .value = text
+                  });
+              }
             }
             ptr--;
           }

@@ -13,11 +13,12 @@ namespace jcast {
   };
 
   export struct Mesh {
+    std::string_view name;
     std::vector<Vertex> vertices;
   };
 
   export struct Asset {
-    Mesh mesh;
+    std::vector<Mesh> meshes;
   };
 
 }

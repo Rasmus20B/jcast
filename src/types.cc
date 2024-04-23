@@ -1,6 +1,7 @@
 module;
 
 #include <cstdint>
+#include <cmath>
 
 export module jcast:types;
 

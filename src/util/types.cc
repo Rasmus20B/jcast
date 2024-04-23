@@ -1,6 +1,7 @@
 module;
 
 #include <cstdint>
+#include <cmath>
 
 export module util:types;
 
@@ -13,4 +14,6 @@ export {
   using i16 = std::int16_t;
   using i32 = std::int32_t;
   using i64 = std::int64_t;
+  using f32 = std::float_t;
+  using f64 = std::double_t;
 }

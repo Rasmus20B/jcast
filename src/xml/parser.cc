@@ -18,18 +18,26 @@ namespace xml {
 
   using Attribute = std::pair<std::string, std::string>;
 
-  struct DOM_Node {
-    std::vector<Attribute> attrs;
+  export struct DOM_Node {
+    std::unordered_map<std::string, std::string> attrs;
     std::vector<u32> children;
     std::string text;
+    std::string name;
     u32 parent;
   };
 
-  struct DOM {
+  export struct DOM {
+
+    template<typename T>
+    DOM_Node& operator[](const T idx);
     DOM_Node& operator[](const std::string idx) { return nodes[lookup[idx]]; }
+    DOM_Node& operator[](const std::string_view idx) { return nodes[lookup[idx.data()]]; }
+    DOM_Node& operator[](const u32 idx) { return nodes[idx]; }
 
     void push_back(const std::string id) {
-      nodes.push_back({});
+      nodes.push_back({
+          .name = id
+          });
       lookup[id] = count;
       count++;
     }
@@ -39,20 +47,27 @@ namespace xml {
     u32 count = 0;
   };
 
-  export auto parse(const std::string code) -> DOM {
+  export auto parse(const std::string_view code) -> DOM {
 
     auto tokens = lex(code);
     DOM d;
     std::string cur{};
     u16 depth = 0;
+    auto not_slash = [](const char c) {
+      return !(c == '/');
+    };
     for(auto &t: tokens) {
       switch(t.type) {
         case TokenType::START:
           {
             auto par = cur;
-            cur = cur += "/" + t.value;
+            cur += "/" + t.value;
+            if(par.size()) {
+              // std::println("{} par: {}, {}", depth, par, cur);
+              d[par].children.push_back(d.count);
+              d[cur].parent = d.lookup[par];
+            }
             d.push_back(cur);
-            d[cur].parent = d.lookup[par];
             depth++;
           }
           break;
@@ -61,9 +76,7 @@ namespace xml {
             if(depth) {
               cur = std::string_view(cur) 
                 | std::views::reverse
-                | std::views::drop_while([](const char c) {
-                    return !(c == '/');
-                    })
+                | std::views::drop_while(not_slash)
                 | std::views::drop(1)
                 | std::views::reverse
                 | std::ranges::to<std::string>();
@@ -78,7 +91,7 @@ namespace xml {
           break;
         case TokenType::ATTR:
           {
-            d[cur].attrs.push_back({t.attribute, t.value});
+            d[cur].attrs.insert({t.attribute, t.value});
           }
         default:
           break;
