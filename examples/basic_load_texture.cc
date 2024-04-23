@@ -6,5 +6,5 @@ using namespace jcast;
 
 auto main() -> i32 {
 
-  jcast::Mesh m1 = jcast::load_mesh("../examples/2cubes.dae");
+  jcast::Mesh m1 = jcast::load_mesh("../examples/cube.dae");
 }

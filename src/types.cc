@@ -14,4 +14,7 @@ export {
   using i16 = std::int16_t;
   using i32 = std::int32_t;
   using i64 = std::int64_t;
+
+  struct vec3 { float x, y, z;};
+  struct vec2 { float x, y;};
 }

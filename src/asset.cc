@@ -8,8 +8,10 @@ import util;
 
 namespace jcast {
 
-  struct Vertex {
-    float x, y, z;
+  export struct Vertex {
+    vec3 position;
+    vec3 normal;
+    vec2 texcoords;
   };
 
   export struct Mesh {
