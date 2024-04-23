@@ -118,39 +118,35 @@ namespace jcast {
     Mesh get_mesh(std::vector<Source>& sources, 
                   std::vector<Triangles>& triangles, 
                   std::vector<Vertices>& vertices) {
-      auto count = triangles[0].count;
-      auto step = 3;
+      auto count = triangles[0].prims.size();
 
-      auto v_index = 0;
       auto v_stride = sources[0].stride;
       auto v_count = sources[0].count;
       auto v_span = std::mdspan(sources[0].array.data(), v_count, v_stride);
 
-      auto n_index = 1;
       auto n_stride = sources[1].stride;
       auto n_count = sources[1].count;
       auto n_span = std::mdspan(sources[1].array.data(), n_count, n_stride);
 
-      auto t_index = 2;
       auto t_stride = sources[2].stride;
       auto t_count = sources[2].count;
       auto t_span = std::mdspan(sources[2].array.data(), t_count, t_stride);
 
       std::vector<Vertex> verts;
 
-      for(int i = 0; i < count * 3; ++i) {
+      for(int i = 0; i < count; i+=3) {
         auto idx = triangles[0].prims[i];
         Vertex v;
         v.position.x = v_span[idx, 0];
         v.position.y = v_span[idx, 1];
         v.position.z = v_span[idx, 2];
 
-        idx = triangles[0].prims[++i];
+        idx = triangles[0].prims[i+1];
         v.normal.x = n_span[idx, 0];
         v.normal.y = n_span[idx, 1];
         v.normal.z = n_span[idx, 2];
 
-        idx = triangles[0].prims[++i];
+        idx = triangles[0].prims[i+2];
         v.texcoords.x = t_span[idx, 0];
         v.texcoords.y = t_span[idx, 1];
         verts.emplace_back(v);
@@ -169,7 +165,6 @@ namespace jcast {
 
       std::vector<Mesh> meshes;
 
-      std::println("Geometries\n=========");
       for(auto &c: idx.children) {
         Mesh tmp;
         auto ptr = dom[c];
@@ -193,41 +188,8 @@ namespace jcast {
             vertices.emplace_back(tmp);
           }
         }
-        //
-        // std::println("Sources\n========");
-        // for(auto s: sources) {
-        //   std::println("{}: count : {}, stride : {}", s.name, s.count, s.stride);
-        //   for(auto n: s.array) {
-        //     std::print("{}, ", n);
-        //   }
-        //   std::println("");
-        // }
-        //
-        // std::println("Triangles\n========");
-        // for(auto t: triangles) {
-        //   std::println("count: {}", t.count);
-        //   std::println("Inputs\n=========");
-        //   for(auto i: t.inputs) {
-        //     std::println("{}, {}, {}", i.semantic, i.source_name, i.offset);
-        //   }
-        //   std::println("Primitives\n=========");
-        //   for(auto n: t.prims) {
-        //     std::print("{}, ", n);
-        //   }
-        //   std::println("");
-        // }
-        //
-        // std::println("Vertices\n=========");
-        // for(auto v: vertices) {
-        //   std::println("{}: {}, {}", v.name, v.position.semantic, v.position.source_name);
-        // }
-
         auto mesh = get_mesh(sources, triangles, vertices);
-
-        for(auto v: mesh.vertices) {
-          std::println("POSITION: {}, {}, {}", v.position.x, v.position.y, v.position.z);
-        }
-        meshes.emplace_back(tmp);
+        meshes.emplace_back(mesh);
       }
       return meshes;
     }
@@ -243,10 +205,6 @@ namespace jcast {
 
       auto dom = xml::parse(data);
       auto meshes = get_meshes(dom);
-
-      if(!meshes.size()) {
-        meshes.push_back({});
-      }
 
       Asset ret;
       ret.meshes = meshes;

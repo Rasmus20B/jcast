@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 4.0.2 commit date:2023-12-05, commit time:07:41, hash:9be62e85b727</authoring_tool>
     </contributor>
-    <created>2024-04-22T08:29:08</created>
-    <modified>2024-04-22T08:29:08</modified>
+    <created>2024-04-23T22:47:50</created>
+    <modified>2024-04-23T22:47:50</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -15,7 +15,7 @@
       <optics>
         <technique_common>
           <perspective>
-            <xfov sid="xfov">44.88369</xfov>
+            <xfov sid="xfov">39.59775</xfov>
             <aspect_ratio>1.777778</aspect_ratio>
             <znear sid="znear">0.1</znear>
             <zfar sid="zfar">100</zfar>
