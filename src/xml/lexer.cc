@@ -12,6 +12,7 @@ export module jcast.xml:lexer;
 
 import jcast.util;
 
+using namespace jcast::util;
 namespace xml {
   export enum class TokenType : u8 {
     STARTDOC,

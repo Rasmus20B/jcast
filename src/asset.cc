@@ -6,7 +6,9 @@ export module asset;
 
 import jcast.util;
 
+
 namespace jcast {
+  using namespace jcast::util;
 
   export struct Vertex {
     vec3 position;

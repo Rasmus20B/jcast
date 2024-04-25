@@ -1,17 +1,16 @@
 
 import jcast;
-import jcast.util;
 
 #include <print>
 #include <mdspan>
 
 #include "raylib.h"
 
-auto main() -> i32 {
+auto main() -> int {
   jcast::Mesh m1 = jcast::load_mesh("../examples/cube.dae");
 
-  std::vector<f32> verts;
-  std::vector<f32> coords;
+  std::vector<float> verts;
+  std::vector<float> coords;
   for(auto i: m1.vertices) {
     verts.push_back(i.position.x);
     verts.push_back(i.position.y);
@@ -21,16 +20,16 @@ auto main() -> i32 {
   }
 
 
-  vec2 windowDimensions = { 1920, 1080 };
+  Vector2 windowDimensions = { 1920, 1080 };
   InitWindow(windowDimensions.x, windowDimensions.y, "p2");
 
   Mesh real;
   real.vertexCount = m1.vertices.size() * 3;
   real.triangleCount = m1.vertices.size();
 
-  real.vertices = (float*)MemAlloc(real.vertexCount * 3 * sizeof(f32));
-  real.texcoords = (float*)MemAlloc(real.vertexCount * 2 * sizeof(f32));
-  real.normals = (float*)MemAlloc(real.vertexCount * 3 * sizeof(f32));
+  real.vertices = (float*)MemAlloc(real.vertexCount * 3 * sizeof(float));
+  real.texcoords = (float*)MemAlloc(real.vertexCount * 2 * sizeof(float));
+  real.normals = (float*)MemAlloc(real.vertexCount * 3 * sizeof(float));
 
   int i = 0;
   int j = 0;
@@ -47,7 +46,6 @@ auto main() -> i32 {
   }
 
   Camera camera = { { 0.0f, 0.0f, 5.0f }, { 0.0f, 2.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 60.0f, CAMERA_PERSPECTIVE };
-
 
   UploadMesh(&real, false);
   Model m = LoadModelFromMesh(real);
@@ -73,7 +71,7 @@ auto main() -> i32 {
 
       BeginMode3D(camera);
 
-        DrawGrid(0, 1.0f);
+        DrawGrid(10, 1.0f);
         DrawModel(m, {0.f, 0.f, 0.f}, 1.0f, GRAY);
 
         auto mesh = m.meshes[0];

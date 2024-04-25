@@ -22,6 +22,7 @@ import jcast.xml;
 
 
 namespace jcast {
+  using namespace jcast::util;
   namespace collada {
 
     struct Source {

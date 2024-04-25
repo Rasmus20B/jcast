@@ -1,10 +1,10 @@
 module;
 
 #include <print>
+import jcast.util;
 
 export module jcast;
 
-import jcast.util;
 
 export import collada;
 export import asset;
