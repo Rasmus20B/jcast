@@ -15,10 +15,10 @@ import asset;
 
 export module collada;
 
-import xml;
 import asset;
 
-import util;
+import jcast.util;
+import jcast.xml;
 
 
 namespace jcast {

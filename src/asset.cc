@@ -4,7 +4,7 @@ module;
 
 export module asset;
 
-import util;
+import jcast.util;
 
 namespace jcast {
 

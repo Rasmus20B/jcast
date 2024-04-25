@@ -9,10 +9,10 @@ module;
 #include <vector>
 #include <ranges>
 
-export module xml:parser;
+export module jcast.xml:parser;
 
 import :lexer;
-import util;
+import jcast.util;
 
 namespace xml {
 

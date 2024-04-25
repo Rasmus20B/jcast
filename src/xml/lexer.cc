@@ -8,9 +8,9 @@ module;
 #include <print>
 #include <string_view>
 
-export module xml:lexer;
+export module jcast.xml:lexer;
 
-import util;
+import jcast.util;
 
 namespace xml {
   export enum class TokenType : u8 {

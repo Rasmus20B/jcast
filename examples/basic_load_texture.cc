@@ -1,18 +1,18 @@
 
 import jcast;
-import util;
+import jcast.util;
 
 #include <print>
 #include <mdspan>
-#include <raylib.h>
+
+#include "../deps/raylib/src/raylib.h"
 
 auto main() -> i32 {
   jcast::Mesh m1 = jcast::load_mesh("../examples/cube.dae");
-  jcast::Mesh m2 = jcast::load_mesh("../examples/cube_weird.dae");
 
   std::vector<f32> verts;
   std::vector<f32> coords;
-  for(auto i: m2.vertices) {
+  for(auto i: m1.vertices) {
     verts.push_back(i.position.x);
     verts.push_back(i.position.y);
     verts.push_back(i.position.z);
@@ -21,15 +21,12 @@ auto main() -> i32 {
   }
 
 
-  vec2 windowDimensions = { 1080, 768 };
+  vec2 windowDimensions = { 1920, 1080 };
   InitWindow(windowDimensions.x, windowDimensions.y, "p2");
-  Model work = LoadModel("../examples/cube.glb");
 
   Mesh real;
-  real.vertexCount = m2.vertices.size() * 3;
-  real.triangleCount = m2.vertices.size();
-
-  std::println("size : {}", m1.vertices.size());
+  real.vertexCount = m1.vertices.size() * 3;
+  real.triangleCount = m1.vertices.size();
 
   real.vertices = (float*)MemAlloc(real.vertexCount * 3 * sizeof(f32));
   real.texcoords = (float*)MemAlloc(real.vertexCount * 2 * sizeof(f32));
@@ -38,7 +35,7 @@ auto main() -> i32 {
   int i = 0;
   int j = 0;
   int k = 0;
-  for(auto v: m2.vertices) {
+  for(auto v: m1.vertices) {
     real.vertices[i++] = v.position.x;
     real.vertices[i++] = v.position.y;
     real.vertices[i++] = v.position.z;
@@ -49,22 +46,27 @@ auto main() -> i32 {
     real.texcoords[k++] = v.texcoords.x;
   }
 
-  Camera camera = { { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 45.0f, 0 };
+  Camera camera = { { 0.0f, 0.0f, 5.0f }, { 0.0f, 2.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 60.0f, CAMERA_PERSPECTIVE };
+
+
   UploadMesh(&real, false);
   Model m = LoadModelFromMesh(real);
+  DisableCursor();
   while(!WindowShouldClose()) {
-
-    UpdateCamera(&camera, CAMERA_ORBITAL);
-
-    if(IsKeyDown(KEY_W)) {
-      camera.position.z -= .005;
-    } else if(IsKeyDown(KEY_S)) {
-      camera.position.z += .005;
-    } else if(IsKeyDown(KEY_A)) {
-      camera.position.x -= .005;
-    } else if(IsKeyDown(KEY_D)) {
-      camera.position.x += .005;
-    }
+    UpdateCameraPro(&camera, {
+        (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) * 0.01f -
+        (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))*0.01f,    
+        (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT))*0.01f -   // Move right-left
+        (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))*0.01f,
+        0.0f 
+        },
+        (Vector3){
+                GetMouseDelta().x*0.1f,                            // Rotation: yaw
+                GetMouseDelta().y*0.1f,                            // Rotation: pitch
+                0.0f                                                // Rotation: roll
+            },
+        GetMouseWheelMove() * 2.0f
+        );
 
     BeginDrawing();
       ClearBackground(RAYWHITE);
@@ -72,10 +74,17 @@ auto main() -> i32 {
       BeginMode3D(camera);
 
         DrawGrid(0, 1.0f);
-        DrawModel(m, {0.f, 0.f, 0.f}, 1.0f, BLACK);
-        DrawModel(work, {4.f, 0.f, 0.f}, 1.0f, BLACK);
-        DrawBoundingBox(GetModelBoundingBox(m), RED);
+        DrawModel(m, {0.f, 0.f, 0.f}, 1.0f, GRAY);
 
+        auto mesh = m.meshes[0];
+        auto vertices = std::mdspan(mesh.vertices, mesh.triangleCount, 9);
+        for(int i = 0; i < vertices.extent(0); ++i) {
+          DrawLine3D({vertices[i, 0], vertices[i, 1], vertices[i, 2]}, {vertices[i, 3], vertices[i, 4],vertices[i, 5]}, DARKBLUE);
+          DrawLine3D({vertices[i, 0], vertices[i, 1], vertices[i, 2]}, {vertices[i, 6], vertices[i, 7],vertices[i, 8]}, DARKBLUE);
+          DrawLine3D({vertices[i, 3], vertices[i, 4], vertices[i, 5]}, {vertices[i, 6], vertices[i, 7],vertices[i, 8]}, DARKBLUE);
+        }
+        // DrawGrid(10, 1.f);
+        // DrawBoundingBox(GetModelBoundingBox(m), RED);
       EndMode3D();
 
       DrawFPS(10, 10);

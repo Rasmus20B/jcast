@@ -1,6 +1,6 @@
 
-add_library(util)
-target_sources(util
+add_library(jcast_util)
+target_sources(jcast_util
   PUBLIC
   FILE_SET
   CXX_MODULES FILES
@@ -8,8 +8,8 @@ target_sources(util
   util/types.cc
   )
 
-add_library(xml)
-target_sources(xml
+add_library(jcast_xml)
+target_sources(jcast_xml
   PUBLIC
   FILE_SET
   CXX_MODULES FILES
@@ -28,5 +28,5 @@ target_sources(${PROJECT_NAME}
   asset.cc
   )
 
-target_link_libraries(${PROJECT_NAME} util xml)
-target_link_libraries(xml util)
+target_link_libraries(jcast_xml jcast_util)
+target_link_libraries(${PROJECT_NAME} jcast_xml)

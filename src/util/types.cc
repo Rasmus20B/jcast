@@ -3,7 +3,7 @@ module;
 #include <cstdint>
 #include <cmath>
 
-export module util:types;
+export module jcast.util:types;
 
 export {
   using u8 = std::uint8_t;

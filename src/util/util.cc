@@ -1,3 +1,3 @@
-export module util;
+export module jcast.util;
 
 export import :types;

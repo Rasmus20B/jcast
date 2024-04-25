@@ -4,7 +4,7 @@ module;
 
 export module jcast;
 
-import util;
+import jcast.util;
 
 export import collada;
 export import asset;
