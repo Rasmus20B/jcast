@@ -5,7 +5,7 @@ import jcast.util;
 #include <print>
 #include <mdspan>
 
-#include "../deps/raylib/src/raylib.h"
+#include "raylib.h"
 
 auto main() -> i32 {
   jcast::Mesh m1 = jcast::load_mesh("../examples/cube.dae");
